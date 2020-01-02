@@ -4,20 +4,25 @@
 
 # Teemo
 > 东北大学GPA监控程序
+
 <p align="center">
-    <img src="https://raw.githubusercontent.com/iMyOwn/teemo/master/img/demo.png" alt="demo">
+    <img src="https://raw.githubusercontent.com/iMyOwn/teemo/master/img/demo@windows.png" alt="windows demo">
+</p>
+<p align="center">
+    <img src="https://raw.githubusercontent.com/iMyOwn/teemo/master/img/demo@linux.png" alt="linux demo">
 </p>
 
 # 系统要求
 满足以下之一即可
 - OSX
 - Windows 8+
-- Linux with KDE / sw-notify-send / notify-send
+- Linux
 
 # 下载
 1. 进入[Release页面](https://github.com/iMyOwn/teemo/releases)下载对应系统的压缩包
 2. 解压压缩包到某个单独文件夹内
 3. OSX/Linux使用`terminal`，Windows使用`cmd`，输入`teemo -h`，若输出帮助信息则完成下载
+> OSX/Linux系统可能需要通过`chmod +x teemo`赋予程序可执行权限
 
 # 使用
 ```shell script

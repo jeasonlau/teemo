@@ -39,6 +39,7 @@ func init() {
 func main() {
 	flag.Parse()
 	login()
+	fmt.Println("登陆成功")
 	if q {
 		// 获取学期信息
 		getSemesters()
@@ -50,6 +51,9 @@ func main() {
 		for {
 			newGPA = getGPA()
 			fmt.Printf("%10s\t绩点: %s\n", time.Now().Format("2006-01-02 15:04:05"), newGPA)
+			if len(gpa) < 1 {
+				gpa = newGPA
+			}
 			if newGPA != gpa {
 				n, _ := strconv.ParseFloat(newGPA, 32)
 				g, _ := strconv.ParseFloat(gpa, 32)

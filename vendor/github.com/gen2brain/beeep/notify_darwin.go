@@ -9,12 +9,12 @@ import (
 // Notify sends desktop notification.
 //
 // On macOS this executes AppleScript with `osascript` binary.
-func Notify(title, message, appIcon string) error {
+func Notify(appID, title, message, appIcon string) error {
 	osa, err := exec.LookPath("osascript")
 	if err != nil {
 		return err
 	}
 
-	cmd := exec.Command(osa, "-e", `display notification "`+message+`" with title "`+title+`"`)
+	cmd := exec.Command(osa, "-e", `display notification "`+message+`" with title "`+title+`" subtitle "`+appID+`"`)
 	return cmd.Run()
 }
