@@ -3,6 +3,10 @@
 </p>
 
 # Teemo
+![](https://img.shields.io/github/release-date/iMyOwn/teemo)
+![](https://img.shields.io/github/license/iMyown/teemo)
+![](https://img.shields.io/github/go-mod/go-version/iMyOwn/teemo)
+
 > 东北大学GPA监控程序
 
 <p align="center">
@@ -38,7 +42,10 @@ teemo -u 学号 -p 密码 -q
 > 监控中请不要关闭程序
 > 
 > - Linux / OSX不要关闭Terminal，或使用类似于`screen`、`nohup`等工具与命令后台运行程序
-> - Windows不要关闭CMD)
+> - Windows不要关闭CMD
 
 # 修改程序
 【注意】编写过程中修改了部分依赖包代码以解决依赖包的Bug，因此请使用`/vendor`中提供的依赖包
+
+# 开源协议
+Mit License.
