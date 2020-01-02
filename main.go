@@ -46,20 +46,21 @@ func main() {
 	}
 
 	go func() {
+		var newGPA string
 		for {
-			newGPA := getGPA()
+			newGPA = getGPA()
 			fmt.Printf("%10s\t绩点: %s\n", time.Now().Format("2006-01-02 15:04:05"), newGPA)
 			if newGPA != gpa {
 				n, _ := strconv.ParseFloat(newGPA, 32)
 				g, _ := strconv.ParseFloat(gpa, 32)
 				diff := n - g
 				if diff > 0 {
-					err := beeep.Notify("Teemo", "绩点变高啦", fmt.Sprintf("绩点上升了%f", diff), "img/up.png")
+					err := beeep.Notify("Teemo", "绩点变高啦", fmt.Sprintf("绩点上升了\t%.4f\n当前绩点\t%s", diff, newGPA), "img/up.png")
 					if err != nil {
 						fmt.Println("推送提示失败")
 					}
 				} else {
-					err := beeep.Notify("Teemo", "绩点降低了", fmt.Sprintf("绩点降低了%f", diff), "img/down.png")
+					err := beeep.Notify("Teemo", "绩点降低了", fmt.Sprintf("绩点降低了\t%.4f\n当前绩点\t%s", diff, newGPA), "img/down.png")
 					if err != nil {
 						fmt.Println("推送提示失败")
 					}
