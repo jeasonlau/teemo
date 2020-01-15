@@ -83,7 +83,6 @@ func execCommand(name string, params ...string) (result string, code int) {
 	}
 	result = string(outbuf.Bytes())
 	c := errbuf.Bytes()
-	c = c[:len(c)-1]
 	code, _ = strconv.Atoi(string(c))
 	return
 }
