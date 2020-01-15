@@ -160,7 +160,11 @@ func usage() {
 	teemo -u 学号 -p 密码 -s 学期代码
 	teemo -u 学号 -p 密码 -s 学期代码 -f 监控频率(单位秒)
 	teemo -s 学期代码	(使用ipgw保存的账号)
+
 查询学期代码:
 	teemo -u 学号 -p 密码 -q
-	teemo -q		(使用ipgw保存的账号)`)
+	teemo -q		(使用ipgw保存的账号)
+
+若不指定s，默认12
+若不指定f，默认60`)
 }
