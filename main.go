@@ -129,9 +129,14 @@ func readBody(resp *http.Response) (body string) {
 
 func usage() {
 	fmt.Println(`
-监控绩点:
-	teemo -u 学号 -p 密码
-	teemo -u 学号 -p 密码 -f 监控频率(单位秒)
+teemo -u 学号 -p 密码
+    如 teemo -u 2018xxxx -p abcdefg
+
+teemo -u 学号 -p 密码 -f 监控频率(单位秒)
+    如 teemo -u 2018xxxx -p abcdefg -f 60
+
+teemo -u 学号 -p 密码 -v 使用webvpn
+    如 teemo -u 2018xxxx -p abcdefg -v
 
 若不指定u和p，默认使用ipgw保存的账号
 若不指定f，默认60`)

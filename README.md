@@ -35,6 +35,13 @@
 ipgw tool get teemo
 ```
 
+查看使用说明
+```shell script
+teemo -h
+```
+
+若正常输出使用说明，则已下载完毕，否则请尝试再次`ipgw tool get teemo`重新下载
+
 # 更新
 
 使用`ipgw`的工具更新功能即可
@@ -48,15 +55,24 @@ ipgw tool update -f teemo
 ```
 
 # 使用
+本工具为命令行工具，Linux请在`terminal`中使用，windows请在`cmd`中使用。
+
+自`v1.1.0`起已支持外网通过webvpn监控。
+
 ```
-监控绩点:
-        teemo -u 学号 -p 密码
-        teemo -u 学号 -p 密码 -f 监控频率(单位秒)
+teemo -u 学号 -p 密码
+    如 teemo -u 2018xxxx -p abcdefg
+
+teemo -u 学号 -p 密码 -f 监控频率(单位秒)
+    如 teemo -u 2018xxxx -p abcdefg -f 60
+
+teemo -u 学号 -p 密码 -v 使用webvpn
+    如 teemo -u 2018xxxx -p abcdefg -v
 
 若不指定u和p，默认使用ipgw保存的账号
 若不指定f，默认60
-
 ```
+
 > 监控中请不要关闭程序
 > 
 > - Linux不要关闭Terminal; 也可使用类似于`screen`、`nohup`等工具与命令后台运行程序
