@@ -14,34 +14,27 @@ import (
 )
 
 var (
-	u, p      string
-	f, s      int
-	q         bool
-	semesters [][]string
-	gpa       string
-	client    *http.Client
+	u, p string
+	f    int
+	v    bool
 
-	upPath   string
-	downPath string
+	semesters   [][]string
+	gpa, reqUrl string
+	client      *http.Client
+
+	upPath, downPath string
 )
 
 func init() {
 	flag.StringVar(&u, "u", "", "学号")
 	flag.StringVar(&p, "p", "", "密码")
-	flag.IntVar(&s, "s", 12, "学期代码")
 	flag.IntVar(&f, "f", 60, "频率 单位秒")
-	flag.BoolVar(&q, "q", false, "查询学期代码")
+	flag.BoolVar(&v, "v", false, "使用webvpn")
 	flag.Usage = usage
 }
 
 func main() {
 	flag.Parse()
-	if q {
-		// 获取学期信息
-		fmt.Println("正在获取学期信息...")
-		getSemesters()
-		return
-	}
 
 	upPath, downPath = GetImgPath()
 
@@ -55,12 +48,12 @@ func main() {
 			fmt.Printf("%10s\t绩点: %s\n", time.Now().Format("2006-01-02 15:04:05"), newGPA)
 			if newGPA != gpa {
 				if newGPA == "获取失败" {
-					continue
+					goto wait
 				}
 
 				if len(gpa) < 1 {
 					gpa = newGPA
-					continue
+					goto wait
 				}
 
 				n, _ := strconv.ParseFloat(newGPA, 32)
@@ -80,37 +73,12 @@ func main() {
 				gpa = newGPA
 				//绩点改变
 			}
+		wait:
 			time.Sleep(time.Duration(f) * time.Second)
 		}
 	}()
 
 	select {}
-}
-
-func getSemesters() {
-	config := ipgw.NewProxyConfig()
-	config.Method = "POST"
-	config.Body = "tagId=semesterBar19319741991Semester&dataType=semesterCalendar&value=12&empty=false"
-	config.Headers.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-
-	config.User = &ipgw.User{
-		Username: u,
-		Password: p,
-	}
-	config.ServiceUrl = "http://219.216.96.4/eams/dataQuery.action"
-	config.Headers.Set("Referer", "http://219.216.96.4/eams/homeExt.action")
-	config.Headers.Set("Origin", "http://219.216.96.4")
-
-	body, code := ipgw.Proxy(config)
-	if code != 0 {
-		fmt.Println(ipgw.CodeText(code))
-		os.Exit(2)
-	}
-	semExp := regexp.MustCompile(`{id:(\d+?),schoolYear:"(.+?)",name:"(.+?)"}`)
-	semesters = semExp.FindAllStringSubmatch(body, -1)
-	for _, semester := range semesters {
-		fmt.Printf("%s学年%s学期\t%s\n", semester[2], semester[3], semester[1])
-	}
 }
 
 func login() *http.Client {
@@ -119,18 +87,30 @@ func login() *http.Client {
 		Username: u,
 		Password: p,
 	}
+	config.Webvpn = v
 	cookie, code := ipgw.Login(config)
 	if code != 0 {
 		fmt.Println(ipgw.CodeText(code))
 		os.Exit(2)
 	}
 
-	return ipgw.NewCasClient(cookie, false)
+	c := ipgw.NewCasClient(cookie, v)
+	if v {
+		_, _ = c.Get("https://219-216-96-4.webvpn.neu.edu.cn/eams/homeExt.action")
+
+		reqUrl = fmt.Sprintf("https://219-216-96-4.webvpn.neu.edu.cn/eams/teach/grade/course/person!search.action?semesterId=12&projectType=&_=%d", time.Now().Unix())
+	} else {
+		reqUrl = fmt.Sprintf("http://219.216.96.4/eams/teach/grade/course/person!search.action?semesterId=12&projectType=&_=%d", time.Now().Unix())
+	}
+	return c
 }
 
 func getGPA() string {
-	resp, err := client.Get(fmt.Sprintf("http://219.216.96.4/eams/teach/grade/course/person!search.action?semesterId=%d&projectType=&_=%d", s, time.Now().Unix()))
-	handlerErr(err)
+	resp, err := client.Get(reqUrl)
+	if err != nil {
+		fmt.Println("网络错误")
+		return "获取失败"
+	}
 	body := readBody(resp)
 
 	gpaExp := regexp.MustCompile(`<div>总平均绩点：(.+?)</div>`)
@@ -147,24 +127,12 @@ func readBody(resp *http.Response) (body string) {
 	return string(res)
 }
 
-func handlerErr(err error) {
-	if err != nil {
-		fmt.Println("网络错误")
-		os.Exit(2)
-	}
-}
-
 func usage() {
 	fmt.Println(`
 监控绩点:
-	teemo -u 学号 -p 密码 -s 学期代码
-	teemo -u 学号 -p 密码 -s 学期代码 -f 监控频率(单位秒)
-	teemo -s 学期代码	(使用ipgw保存的账号)
+	teemo -u 学号 -p 密码
+	teemo -u 学号 -p 密码 -f 监控频率(单位秒)
 
-查询学期代码:
-	teemo -u 学号 -p 密码 -q
-	teemo -q		(使用ipgw保存的账号)
-
-若不指定s，默认12
+若不指定u和p，默认使用ipgw保存的账号
 若不指定f，默认60`)
 }

@@ -15,6 +15,7 @@ type LoginConfig struct {
 
 type ProxyConfig struct {
 	User       *User
+	LaunchUrl  string
 	ServiceUrl string
 	Method     string
 	Headers    *http.Header
