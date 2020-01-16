@@ -3,7 +3,6 @@
 </p>
 
 <h1 align="center">Teemo</h1>
-
 <p align="center">
     <img src="https://img.shields.io/github/release-date/iMyOwn/teemo" alt="">
     <img src="https://img.shields.io/github/license/iMyown/teemo" alt="">
@@ -13,15 +12,37 @@
 
 > 东北大学GPA监控程序
 
-<p align="center">Windows</p>
-<p align="center">
-    <img src="https://raw.githubusercontent.com/iMyOwn/teemo/master/img/demo@windows.png" alt="windows demo">
-</p>
-<p align="center">Linux</p>
-<p align="center">
-    <img src="https://raw.githubusercontent.com/iMyOwn/teemo/master/img/demo@linux.png" alt="linux demo">
-</p>
+# 修改内容
 
+由于个人使用的桌面环境为`xfce`，无法正常接收通知，故`fork`该项目并将其通知方式修改为邮件。
+
+# 使用方法
+
+以QQ邮箱为例：
+1. 登录官网获取`smtp`授权码（此处不赘述）。
+
+2. 打开`mail/mail.go`，将8/9行修改为：
+
+   ```go
+   	from := "你的邮箱"
+   	password := "你的授权码"
+   ```
+
+3. 打开`main.go`，将59/64行修改为：
+
+   ```go
+   err := mail.SendMail("你的邮箱", fmt.Sprintf("绩点(升高|降低)了\t%.4f\n当前绩点\t%s", diff, newGPA))
+   ```
+
+4. 在项目根目录执行：
+
+   ```bash
+   make build-linux
+   //or
+   make build-windows
+   ```
+   位于`build/(linux|windows)`目录的即为可执行文件。
+   
 # 系统要求
 满足以下之一即可
 - Windows 8+
