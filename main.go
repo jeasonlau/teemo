@@ -3,13 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/gen2brain/beeep"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"regexp"
 	"strconv"
 	"teemo/ipgw"
+	"teemo/mail"
 	"time"
 )
 
@@ -21,8 +21,6 @@ var (
 	semesters   [][]string
 	gpa, reqUrl string
 	client      *http.Client
-
-	upPath, downPath string
 )
 
 func init() {
@@ -35,8 +33,6 @@ func init() {
 
 func main() {
 	flag.Parse()
-
-	upPath, downPath = GetImgPath()
 
 	go func() {
 		// 登陆
@@ -59,13 +55,13 @@ func main() {
 				n, _ := strconv.ParseFloat(newGPA, 32)
 				g, _ := strconv.ParseFloat(gpa, 32)
 				diff := n - g
-				if diff > 0 {
-					err := beeep.Notify("Teemo", "绩点变高啦", fmt.Sprintf("绩点上升了\t%.4f\n当前绩点\t%s", diff, newGPA), upPath)
+				if diff > 0 { //修改该处邮箱
+					err := mail.SendMail("b1361974998@gmail.com", fmt.Sprintf("绩点上升了\t%.4f\n当前绩点\t%s", diff, newGPA))
 					if err != nil {
 						fmt.Println("推送提示失败")
 					}
-				} else {
-					err := beeep.Notify("Teemo", "绩点降低了", fmt.Sprintf("绩点降低了\t%.4f\n当前绩点\t%s", diff, newGPA), downPath)
+				} else { //同上
+					err := mail.SendMail("b1361974998@gmail.com", fmt.Sprintf("绩点降低了\t%.4f\n当前绩点\t%s", diff, newGPA))
 					if err != nil {
 						fmt.Println("推送提示失败")
 					}
